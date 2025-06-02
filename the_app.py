@@ -8,7 +8,7 @@ import joblib
 import time
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.compose import ColumnTransformer
-import time 
+
 # ===== SETUP =====
 st.set_page_config(
     page_title="At-Risk Student Prediction Tool",
@@ -117,8 +117,22 @@ def navigation():
     page = st.sidebar.radio("Go to", ["About", "Individual Analysis", "Batch Analysis"])
     return page
 
+# ===== MODEL LOADING =====
+def load_model():
+    try:
+        with open('lr.pkl', 'rb') as file:
+            model = joblib.load(file)
+        return model
+    except FileNotFoundError:
+        st.error("Error: 'lr.pkl' not found. Make sure it's in the same directory as your script.")
+        return None
+    except Exception as e:
+        st.error(f"Error loading model: {e}")
+        return None
+
 # ===== PAGES =====
 def about_page():
+    # Project Title Section
     st.markdown("""
     <style>
         .project-title {
@@ -141,14 +155,6 @@ def about_page():
             font-size: 2rem;
             color: #1e3a8a;
             margin-bottom: 1.5rem;
-        }
-        .section-title {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 500;
-            font-size: 1.8rem;
-            color: #1e3a8a;
-            margin-top: 2rem;
-            margin-bottom: 1rem;
         }
         .metric-circle {
             width: 150px;
@@ -190,7 +196,6 @@ def about_page():
     # Page Title
     st.markdown('<div class="about-title">About This Project</div>', unsafe_allow_html=True)
 
-    # Rest of the existing about_page content remains the same...
     # Project Overview
     st.markdown("""
         <div style="background-color: #e6f0fa; padding: 2rem; border-radius: 10px; 
@@ -257,127 +262,116 @@ def about_page():
         </div>
     """, unsafe_allow_html=True)
 
-# Project Creator & Supervisors
-st.markdown("""
-<div style="font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 2rem; color: #1e3a8a; margin-bottom: 1.5rem;">
-Project Creator & Supervisors
-</div>
-""", unsafe_allow_html=True)
-
-# Image paths (relative to script location)
-image_files = {
-    "hinda": "hinda.jpg",
-    "souhaib": "souhaib.jpg",
-    "tarik": "tarik.jpg",
-    "ens": "ens.jpg",
-    "aui": "aui.jpg"
-}
-
-col1, col2 = st.columns(2)
-
-with col1:
-    # Creator card
-    with st.container():
-        col_img, col_text = st.columns([1, 2])
-        with col_img:
-            try:
-                st.image(image_files["hinda"], width=100)
-            except FileNotFoundError:
-                st.error(f"Failed to load hinda.jpg")
-        with col_text:
-            st.markdown("**Hind Ben Rahmoun**")  
-            st.markdown("Project Creator")  
-            st.markdown("E-LSEI Student")  
-            st.markdown("hind.benrahmoun@etu.uae.ac.ma")
-    
-    # Supervisor card
-    with st.container():
-        col_img, col_text = st.columns([1, 2])
-        with col_img:
-            try:
-                st.image(image_files["souhaib"], width=100)
-            except FileNotFoundError:
-                st.error(f"Failed to load souhaib.jpg")
-        with col_text:
-            st.markdown("**Souhaib Aammou**")  
-            st.markdown("Project Supervisor")  
-            st.markdown("Computer science professor at ENS")  
-            st.markdown("aammou.souhaib@gmail.com")
-    
-    # Co-Supervisor card
-    with st.container():
-        col_img, col_text = st.columns([1, 2])
-        with col_img:
-            try:
-                st.image(image_files["tarik"], width=100)
-            except FileNotFoundError:
-                st.error(f"Failed to load tarik.jpg")
-        with col_text:
-            st.markdown("**Tarik Touis Ghmari**")  
-            st.markdown("Co-Supervisor")  
-            st.markdown("Data Analytics at Babel")  
-            st.markdown("touistarik@gmail.com")
-
-with col2:
+    # Project Creator & Supervisors Section
     st.markdown("""
-    <div style="font-family: 'Montserrat', sans-serif; font-weight: 550; font-size: 1.5rem; color: #1e3a8a; margin-bottom: 1.5rem;">
-    Affiliated Institutions
+    <div style="font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 2rem; color: #1e3a8a; margin-bottom: 1.5rem;">
+    Project Creator & Supervisors
     </div>
     """, unsafe_allow_html=True)
-    
-    # First institution with logo
-    with st.container():
-        col_logo, col_info = st.columns([1, 2])
-        with col_logo:
-            try:
-                st.image(image_files["ens"], width=150)
-            except FileNotFoundError:
-                st.error(f"Failed to load ens.jpg")
-        with col_info:
-            st.markdown("**Ecole Normale Supérieure**")
-            st.markdown("Department of Mathematics and Computer Science")
-            st.markdown("Tetouan")
-            st.markdown("*Home Institution*")
-    
-    st.markdown("---")  # Divider
-    
-    # Second institution with logo
-    with st.container():
-        col_logo, col_info = st.columns([1, 2])
-        with col_logo:
-            try:
-                st.image(image_files["aui"], width=150)
-            except FileNotFoundError:
-                st.error(f"Failed to load aui.jpg")
-        with col_info:
-            st.markdown("**Al-Akhawayn University**")
-            st.markdown("Center for Teaching and Learning")
-            st.markdown("Ifrane")
-            st.markdown("*Internship Host Institution*")
 
-# --- Load the Model ---
-try:
-    with open('lr.pkl', 'rb') as file:
-        model = joblib.load(file)
-except FileNotFoundError:
-    st.error("Error: 'lr.pkl' not found. Make sure it's in the same directory as your script.")
-    model = None
-except Exception as e:
-    st.error(f"Error loading model: {e}")
-    model = None
+    # Image paths (relative to script location)
+    image_files = {
+        "hinda": "hinda.jpg",
+        "souhaib": "souhaib.jpg",
+        "tarik": "tarik.jpg",
+        "ens": "ens.jpg",
+        "aui": "aui.jpg"
+    }
 
+    col1, col2 = st.columns(2)
+
+    with col1:
+        # Creator card
+        with st.container():
+            col_img, col_text = st.columns([1, 2])
+            with col_img:
+                try:
+                    st.image(image_files["hinda"], width=100)
+                except FileNotFoundError:
+                    st.error(f"Failed to load hinda.jpg")
+            with col_text:
+                st.markdown("**Hind Ben Rahmoun**")  
+                st.markdown("Project Creator")  
+                st.markdown("E-LSEI Student")  
+                st.markdown("hind.benrahmoun@etu.uae.ac.ma")
+        
+        # Supervisor card
+        with st.container():
+            col_img, col_text = st.columns([1, 2])
+            with col_img:
+                try:
+                    st.image(image_files["souhaib"], width=100)
+                except FileNotFoundError:
+                    st.error(f"Failed to load souhaib.jpg")
+            with col_text:
+                st.markdown("**Souhaib Aammou**")  
+                st.markdown("Project Supervisor")  
+                st.markdown("Computer science professor at ENS")  
+                st.markdown("aammou.souhaib@gmail.com")
+        
+        # Co-Supervisor card
+        with st.container():
+            col_img, col_text = st.columns([1, 2])
+            with col_img:
+                try:
+                    st.image(image_files["tarik"], width=100)
+                except FileNotFoundError:
+                    st.error(f"Failed to load tarik.jpg")
+            with col_text:
+                st.markdown("**Tarik Touis Ghmari**")  
+                st.markdown("Co-Supervisor")  
+                st.markdown("Data Analytics at Babel")  
+                st.markdown("touistarik@gmail.com")
+
+    with col2:
+        st.markdown("""
+        <div style="font-family: 'Montserrat', sans-serif; font-weight: 550; font-size: 1.5rem; color: #1e3a8a; margin-bottom: 1.5rem;">
+        Affiliated Institutions
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # First institution with logo
+        with st.container():
+            col_logo, col_info = st.columns([1, 2])
+            with col_logo:
+                try:
+                    st.image(image_files["ens"], width=150)
+                except FileNotFoundError:
+                    st.error(f"Failed to load ens.jpg")
+            with col_info:
+                st.markdown("**Ecole Normale Supérieure**")
+                st.markdown("Department of Mathematics and Computer Science")
+                st.markdown("Tetouan")
+                st.markdown("*Home Institution*")
+        
+        st.markdown("---")  # Divider
+        
+        # Second institution with logo
+        with st.container():
+            col_logo, col_info = st.columns([1, 2])
+            with col_logo:
+                try:
+                    st.image(image_files["aui"], width=150)
+                except FileNotFoundError:
+                    st.error(f"Failed to load aui.jpg")
+            with col_info:
+                st.markdown("**Al-Akhawayn University**")
+                st.markdown("Center for Teaching and Learning")
+                st.markdown("Ifrane")
+                st.markdown("*Internship Host Institution*")
 
 def predict_risk(student_data):
     """
-    Fully fixed prediction function that properly handles categorical and numerical features.
+    Prediction function that handles categorical and numerical features.
     """
+    model = load_model()
     if model is None:
         st.error("Model not loaded. Please ensure 'lr.pkl' is available.")
         return {'risk_status': 'Error', 'risk_score': 0}
     
     try:
         # 1. Load the preprocessor
-        with open('D:/ProjectX/preprocessor.pkl', 'rb') as f:
+        with open('preprocessor.pkl', 'rb') as f:
             preprocessor = joblib.load(f)
         
         # 2. Define complete feature set with proper types
@@ -452,13 +446,13 @@ def predict_risk(student_data):
     except Exception as e:
         st.error(f"Unexpected error: {str(e)}")
         return {'risk_status': 'Error', 'risk_score': 0}
-    
+
 def individual_analysis():
     st.markdown("""
-<div style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 2.5rem; color: #1e3a8a; margin-bottom: 1.5rem;">
-Individual Student Analysis
-</div>
-""", unsafe_allow_html=True)
+    <div style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 2.5rem; color: #1e3a8a; margin-bottom: 1.5rem;">
+    Individual Student Analysis
+    </div>
+    """, unsafe_allow_html=True)
 
     with st.form("student_form"):
         col1, col2 = st.columns(2)
@@ -532,8 +526,8 @@ Individual Student Analysis
             )
             st.plotly_chart(fig1, use_container_width=True)
 
-            # Engagement Level Chart (Adjust based on your interpretation of missing assignments)
-            total_assignments = 10  # Assuming a total of 10 assignments for this example
+            # Engagement Level Chart
+            total_assignments = 10  # Assuming a total of 10 assignments
             completed_assignments = total_assignments - missing_assignments
             fig2 = px.pie(
                 names=["Completed Assignments", "Missing Assignments"],
@@ -572,16 +566,9 @@ def batch_analysis():
                 return
             
             # Load the model
-            with st.spinner("Loading model..."):
-                try:
-                    with open('D:/ProjectX/lr.pkl', 'rb') as f:
-                        model = joblib.load(f)
-                except FileNotFoundError:
-                    st.error("Model file (lr.pkl) not found at D:/ProjectX/.")
-                    return
-                except Exception as e:
-                    st.error(f"Error loading model: {str(e)}")
-                    return
+            model = load_model()
+            if model is None:
+                return
             
             # Define features
             categorical_features = [
@@ -614,7 +601,7 @@ def batch_analysis():
                     
                     # Load preprocessor.pkl
                     try:
-                        with open('D:/ProjectX/preprocessor.pkl', 'rb') as f:
+                        with open('preprocessor.pkl', 'rb') as f:
                             preprocessor = joblib.load(f)
                         processed_features = preprocessor.transform(features)
                     except FileNotFoundError:
