@@ -368,11 +368,6 @@ def predict_risk(student_data):
     if model is None:
         st.error("Model not loaded. Please ensure 'lr.pkl' is available.")
         return {'risk_status': 'Error', 'risk_score': 0}
-    
-    try:
-        # 1. Load the preprocessor
-        with open('preprocessor.pkl', 'rb') as f:
-            preprocessor = joblib.load(f)
         
         # 2. Define complete feature set with proper types
         input_features = {
