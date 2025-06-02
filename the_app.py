@@ -573,25 +573,13 @@ def batch_analysis():
                 st.error("The uploaded file must contain a 'Student_id' column.")
                 return
             
-            # Load the model
-            with st.spinner("Loading model..."):
-                try:
-                    with open('preprocessor.pkl', 'rb') as f:
-                        preprocessor = joblib.load(f)
-                except FileNotFoundError:
-                    st.error("Model file (lr.pkl) not found at D:/ProjectX/.")
-                    return
-                except Exception as e:
-                    st.error(f"Error loading model: {str(e)}")
-                    return
-            
             # Define features
             categorical_features = [
                 'Gender', 'Majors', 'Academic_level', 'Prefere_Mode', 'Course_School',
-                'Participation_online_absence_Flag'
+                'Participation_online_absence_Flag', 'Student_id', 'Course_id'
             ]
             numerical_features = [
-                'Student_id','Course_id', 'Age', 'total_sessions_num', 'Session_duration', 'Total_assignments',
+                'Age', 'total_sessions_num', 'Session_duration', 'Total_assignments',
                 'total_canvas_ressources', 'num_attandence_inPerson', 'num_total_absence',
                 'num_attendance_online', 'rate_Of_Globale_Attandence', 'Camera_activation_num',
                 'Unmuted_mic_num', 'Q&A_teams_ participation', 'InMeeting_Duration',
@@ -619,16 +607,10 @@ def batch_analysis():
                         with open('D:/ProjectX/preprocessor.pkl', 'rb') as f:
                             preprocessor = joblib.load(f)
                         processed_features = preprocessor.transform(features)
+                        st.write("Expected feature names:", preprocessor.get_feature_names_out().tolist())
                     except FileNotFoundError:
-                        st.warning("preprocessor.pkl not found. Using in-code preprocessing.")
-                        categorical_transformer = OneHotEncoder(handle_unknown='ignore', sparse_output=False)
-                        numerical_transformer = StandardScaler()
-                        preprocessor = ColumnTransformer(
-                            transformers=[
-                                ('num', numerical_transformer, numerical_features),
-                                ('cat', categorical_transformer, categorical_features)
-                            ])
-                        processed_features = preprocessor.fit_transform(features)
+                        st.error("preprocessor.pkl not found at D:/ProjectX/. Please provide the correct preprocessor file.")
+                        return
                     
                     # Make predictions
                     predictions = model.predict(processed_features)
