@@ -266,11 +266,11 @@ def about_page():
     
     # Image paths (absolute)
     image_files = {
-    "hinda": "images/hinda.jpg",
-    "souhaib": "images/souhaib.jpg",
-    "tarik": "images/tarik.jpg",
-    "ens": "images/ens.jpg",
-    "aui": "images/aui.jpg"
+        "hinda": "hinda.jpg",
+        "souhaib": "souhaib.jpg",
+        "tarik": "tarik.jpg",
+        "ens": "ens.jpg",
+        "aui": "aui.jpg"
     }
     
     col1, col2 = st.columns(2)
