@@ -263,27 +263,27 @@ def about_page():
     Project Creator & Supervisors
     </div>
     """, unsafe_allow_html=True)
-
-    # Image paths (relative to script location)
+    
+    # Image paths (absolute)
     image_files = {
-        "hinda": "hinda.jpg",
-        "souhaib": "souhaib.jpg",
-        "tarik": "tarik.jpg",
-        "ens": "ens.jpg",
-        "aui": "aui.jpg"
+    "hinda": "images/hinda.jpg",
+    "souhaib": "images/souhaib.jpg",
+    "tarik": "images/tarik.jpg",
+    "ens": "images/ens.jpg",
+    "aui": "images/aui.jpg"
     }
-
+    
     col1, col2 = st.columns(2)
-
+    
     with col1:
         # Creator card
         with st.container():
             col_img, col_text = st.columns([1, 2])
             with col_img:
-                try:
+                if os.path.exists(image_files["hinda"]):
                     st.image(image_files["hinda"], width=100)
-                except FileNotFoundError:
-                    st.error(f"Failed to load hinda.jpg")
+                else:
+                    st.error(f"Failed to load hinda.jpg at {image_files['hinda']}")
             with col_text:
                 st.markdown("**Hind Ben Rahmoun**")  
                 st.markdown("Project Creator")  
@@ -294,10 +294,10 @@ def about_page():
         with st.container():
             col_img, col_text = st.columns([1, 2])
             with col_img:
-                try:
+                if os.path.exists(image_files["souhaib"]):
                     st.image(image_files["souhaib"], width=100)
-                except FileNotFoundError:
-                    st.error(f"Failed to load souhaib.jpg")
+                else:
+                    st.error(f"Failed to load souhaib.jpg at {image_files['souhaib']}")
             with col_text:
                 st.markdown("**Souhaib Aammou**")  
                 st.markdown("Project Supervisor")  
@@ -308,16 +308,16 @@ def about_page():
         with st.container():
             col_img, col_text = st.columns([1, 2])
             with col_img:
-                try:
+                if os.path.exists(image_files["tarik"]):
                     st.image(image_files["tarik"], width=100)
-                except FileNotFoundError:
-                    st.error(f"Failed to load tarik.jpg")
+                else:
+                    st.error(f"Failed to load tarik.jpg at {image_files['tarik']}")
             with col_text:
                 st.markdown("**Tarik Touis Ghmari**")  
                 st.markdown("Co-Supervisor")  
                 st.markdown("Data Analytics at Babel")  
                 st.markdown("touistarik@gmail.com")
-
+    
     with col2:
         st.markdown("""
         <div style="font-family: 'Montserrat', sans-serif; font-weight: 550; font-size: 1.5rem; color: #1e3a8a; margin-bottom: 1.5rem;">
@@ -329,10 +329,10 @@ def about_page():
         with st.container():
             col_logo, col_info = st.columns([1, 2])
             with col_logo:
-                try:
+                if os.path.exists(image_files["ens"]):
                     st.image(image_files["ens"], width=150)
-                except FileNotFoundError:
-                    st.error(f"Failed to load ens.jpg")
+                else:
+                    st.error(f"Failed to load ens.jpg at {image_files['ens']}")
             with col_info:
                 st.markdown("**Ecole Normale Supérieure**")
                 st.markdown("Department of Mathematics and Computer Science")
@@ -345,27 +345,30 @@ def about_page():
         with st.container():
             col_logo, col_info = st.columns([1, 2])
             with col_logo:
-                try:
+                if os.path.exists(image_files["aui"]):
                     st.image(image_files["aui"], width=150)
-                except FileNotFoundError:
-                    st.error(f"Failed to load aui.jpg")
+                else:
+                    st.error(f"Failed to load aui.jpg at {image_files['aui']}")
             with col_info:
                 st.markdown("**Al-Akhawayn University**")
                 st.markdown("Center for Teaching and Learning")
                 st.markdown("Ifrane")
                 st.markdown("*Internship Host Institution*")
 
+# --- 1. Load the Model ---
 # --- Load the Model ---
 try:
     with open('lr.pkl', 'rb') as file:
         model = joblib.load(file)
 except FileNotFoundError:
-    st.error("Error: 'lr.pkl' not found. Make sure it's in the same directory as your script.")
+    st.error("Error: 'lr.pkl' not found at D:/ProjectX/.")
     model = None
 except Exception as e:
     st.error(f"Error loading model: {e}")
     model = None
 
+# Remove lines 100–110 (simulated predict_risk)
+# Keep the predict_risk function above (lines 391–452, updated)
 
 def predict_risk(student_data):
     """
@@ -376,8 +379,7 @@ def predict_risk(student_data):
         return {'risk_status': 'Error', 'risk_score': 0}
     
     try:
-        # 1. Load the preprocessor
-        with open('D:/ProjectX/preprocessor.pkl', 'rb') as f:
+        with open('preprocessor.pkl', 'rb') as f:
             preprocessor = joblib.load(f)
         
         # 2. Define complete feature set with proper types
@@ -574,8 +576,8 @@ def batch_analysis():
             # Load the model
             with st.spinner("Loading model..."):
                 try:
-                    with open('D:/ProjectX/lr.pkl', 'rb') as f:
-                        model = joblib.load(f)
+                    with open('preprocessor.pkl', 'rb') as f:
+                        preprocessor = joblib.load(f)
                 except FileNotFoundError:
                     st.error("Model file (lr.pkl) not found at D:/ProjectX/.")
                     return
