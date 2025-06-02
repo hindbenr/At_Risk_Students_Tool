@@ -9,6 +9,7 @@ import time
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.compose import ColumnTransformer
 import time 
+
 # ===== SETUP =====
 st.set_page_config(
     page_title="At-Risk Student Prediction Tool",
@@ -264,7 +265,7 @@ def about_page():
     </div>
     """, unsafe_allow_html=True)
     
-    # Image paths (absolute)
+    # Image paths (relative)
     image_files = {
         "hinda": "hinda.jpg",
         "souhaib": "souhaib.jpg",
@@ -280,10 +281,10 @@ def about_page():
         with st.container():
             col_img, col_text = st.columns([1, 2])
             with col_img:
-                if os.path.exists(image_files["hinda"]):
+                try:
                     st.image(image_files["hinda"], width=100)
-                else:
-                    st.error(f"Failed to load hinda.jpg at {image_files['hinda']}")
+                except FileNotFoundError:
+                    st.error(f"Failed to load hinda.jpg")
             with col_text:
                 st.markdown("**Hind Ben Rahmoun**")  
                 st.markdown("Project Creator")  
@@ -294,10 +295,10 @@ def about_page():
         with st.container():
             col_img, col_text = st.columns([1, 2])
             with col_img:
-                if os.path.exists(image_files["souhaib"]):
+                try:
                     st.image(image_files["souhaib"], width=100)
-                else:
-                    st.error(f"Failed to load souhaib.jpg at {image_files['souhaib']}")
+                except FileNotFoundError:
+                    st.error(f"Failed to load souhaib.jpg")
             with col_text:
                 st.markdown("**Souhaib Aammou**")  
                 st.markdown("Project Supervisor")  
@@ -308,10 +309,10 @@ def about_page():
         with st.container():
             col_img, col_text = st.columns([1, 2])
             with col_img:
-                if os.path.exists(image_files["tarik"]):
+                try:
                     st.image(image_files["tarik"], width=100)
-                else:
-                    st.error(f"Failed to load tarik.jpg at {image_files['tarik']}")
+                except FileNotFoundError:
+                    st.error(f"Failed to load tarik.jpg")
             with col_text:
                 st.markdown("**Tarik Touis Ghmari**")  
                 st.markdown("Co-Supervisor")  
@@ -329,10 +330,10 @@ def about_page():
         with st.container():
             col_logo, col_info = st.columns([1, 2])
             with col_logo:
-                if os.path.exists(image_files["ens"]):
+                try:
                     st.image(image_files["ens"], width=150)
-                else:
-                    st.error(f"Failed to load ens.jpg at {image_files['ens']}")
+                except FileNotFoundError:
+                    st.error(f"Failed to load ens.jpg")
             with col_info:
                 st.markdown("**Ecole Normale Supérieure**")
                 st.markdown("Department of Mathematics and Computer Science")
@@ -345,30 +346,26 @@ def about_page():
         with st.container():
             col_logo, col_info = st.columns([1, 2])
             with col_logo:
-                if os.path.exists(image_files["aui"]):
+                try:
                     st.image(image_files["aui"], width=150)
-                else:
-                    st.error(f"Failed to load aui.jpg at {image_files['aui']}")
+                except FileNotFoundError:
+                    st.error(f"Failed to load aui.jpg")
             with col_info:
                 st.markdown("**Al-Akhawayn University**")
                 st.markdown("Center for Teaching and Learning")
                 st.markdown("Ifrane")
                 st.markdown("*Internship Host Institution*")
 
-# --- 1. Load the Model ---
 # --- Load the Model ---
 try:
     with open('lr.pkl', 'rb') as file:
         model = joblib.load(file)
 except FileNotFoundError:
-    st.error("Error: 'lr.pkl' not found at D:/ProjectX/.")
+    st.error("Error: 'lr.pkl' not found. Please ensure the file is in the same directory.")
     model = None
 except Exception as e:
     st.error(f"Error loading model: {e}")
     model = None
-
-# Remove lines 100–110 (simulated predict_risk)
-# Keep the predict_risk function above (lines 391–452, updated)
 
 def predict_risk(student_data):
     """
@@ -379,6 +376,7 @@ def predict_risk(student_data):
         return {'risk_status': 'Error', 'risk_score': 0}
     
     try:
+        # 1. Load the preprocessor
         with open('preprocessor.pkl', 'rb') as f:
             preprocessor = joblib.load(f)
         
@@ -573,13 +571,25 @@ def batch_analysis():
                 st.error("The uploaded file must contain a 'Student_id' column.")
                 return
             
+            # Load the model
+            with st.spinner("Loading model..."):
+                try:
+                    with open('lr.pkl', 'rb') as f:
+                        model = joblib.load(f)
+                except FileNotFoundError:
+                    st.error("Model file (lr.pkl) not found.")
+                    return
+                except Exception as e:
+                    st.error(f"Error loading model: {str(e)}")
+                    return
+            
             # Define features
             categorical_features = [
                 'Gender', 'Majors', 'Academic_level', 'Prefere_Mode', 'Course_School',
-                'Participation_online_absence_Flag', 'Student_id', 'Course_id'
+                'Participation_online_absence_Flag'
             ]
             numerical_features = [
-                'Age', 'total_sessions_num', 'Session_duration', 'Total_assignments',
+                'Student_id','Course_id', 'Age', 'total_sessions_num', 'Session_duration', 'Total_assignments',
                 'total_canvas_ressources', 'num_attandence_inPerson', 'num_total_absence',
                 'num_attendance_online', 'rate_Of_Globale_Attandence', 'Camera_activation_num',
                 'Unmuted_mic_num', 'Q&A_teams_ participation', 'InMeeting_Duration',
@@ -604,13 +614,19 @@ def batch_analysis():
                     
                     # Load preprocessor.pkl
                     try:
-                        with open('D:/ProjectX/preprocessor.pkl', 'rb') as f:
+                        with open('preprocessor.pkl', 'rb') as f:
                             preprocessor = joblib.load(f)
                         processed_features = preprocessor.transform(features)
-                        st.write("Expected feature names:", preprocessor.get_feature_names_out().tolist())
                     except FileNotFoundError:
-                        st.error("preprocessor.pkl not found at D:/ProjectX/. Please provide the correct preprocessor file.")
-                        return
+                        st.warning("preprocessor.pkl not found. Using in-code preprocessing.")
+                        categorical_transformer = OneHotEncoder(handle_unknown='ignore', sparse_output=False)
+                        numerical_transformer = StandardScaler()
+                        preprocessor = ColumnTransformer(
+                            transformers=[
+                                ('num', numerical_transformer, numerical_features),
+                                ('cat', categorical_transformer, categorical_features)
+                            ])
+                        processed_features = preprocessor.fit_transform(features)
                     
                     # Make predictions
                     predictions = model.predict(processed_features)
