@@ -257,118 +257,115 @@ def about_page():
         </div>
     """, unsafe_allow_html=True)
 
-    # Project Creator & Supervisors
+# Project Creator & Supervisors
+st.markdown("""
+<div style="font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 2rem; color: #1e3a8a; margin-bottom: 1.5rem;">
+Project Creator & Supervisors
+</div>
+""", unsafe_allow_html=True)
+
+# Image paths (relative to script location)
+image_files = {
+    "hinda": "hinda.jpg",
+    "souhaib": "souhaib.jpg",
+    "tarik": "tarik.jpg",
+    "ens": "ens.jpg",
+    "aui": "aui.jpg"
+}
+
+col1, col2 = st.columns(2)
+
+with col1:
+    # Creator card
+    with st.container():
+        col_img, col_text = st.columns([1, 2])
+        with col_img:
+            try:
+                st.image(image_files["hinda"], width=100)
+            except FileNotFoundError:
+                st.error(f"Failed to load hinda.jpg")
+        with col_text:
+            st.markdown("**Hind Ben Rahmoun**")  
+            st.markdown("Project Creator")  
+            st.markdown("E-LSEI Student")  
+            st.markdown("hind.benrahmoun@etu.uae.ac.ma")
+    
+    # Supervisor card
+    with st.container():
+        col_img, col_text = st.columns([1, 2])
+        with col_img:
+            try:
+                st.image(image_files["souhaib"], width=100)
+            except FileNotFoundError:
+                st.error(f"Failed to load souhaib.jpg")
+        with col_text:
+            st.markdown("**Souhaib Aammou**")  
+            st.markdown("Project Supervisor")  
+            st.markdown("Computer science professor at ENS")  
+            st.markdown("aammou.souhaib@gmail.com")
+    
+    # Co-Supervisor card
+    with st.container():
+        col_img, col_text = st.columns([1, 2])
+        with col_img:
+            try:
+                st.image(image_files["tarik"], width=100)
+            except FileNotFoundError:
+                st.error(f"Failed to load tarik.jpg")
+        with col_text:
+            st.markdown("**Tarik Touis Ghmari**")  
+            st.markdown("Co-Supervisor")  
+            st.markdown("Data Analytics at Babel")  
+            st.markdown("touistarik@gmail.com")
+
+with col2:
     st.markdown("""
-    <div style="font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 2rem; color: #1e3a8a; margin-bottom: 1.5rem;">
-    Project Creator & Supervisors
+    <div style="font-family: 'Montserrat', sans-serif; font-weight: 550; font-size: 1.5rem; color: #1e3a8a; margin-bottom: 1.5rem;">
+    Affiliated Institutions
     </div>
     """, unsafe_allow_html=True)
     
-    # Image paths (absolute)
-    image_files = {
-        "hinda": "D:/ProjectX/hinda.jpg",
-        "souhaib": "D:/ProjectX/souhaib.jpg",
-        "tarik": "D:/ProjectX/tarik.jpg",
-        "ens": "D:/ProjectX/ens.jpg",
-        "aui": "D:/ProjectX/aui.jpg"
-    }
+    # First institution with logo
+    with st.container():
+        col_logo, col_info = st.columns([1, 2])
+        with col_logo:
+            try:
+                st.image(image_files["ens"], width=150)
+            except FileNotFoundError:
+                st.error(f"Failed to load ens.jpg")
+        with col_info:
+            st.markdown("**Ecole Normale Supérieure**")
+            st.markdown("Department of Mathematics and Computer Science")
+            st.markdown("Tetouan")
+            st.markdown("*Home Institution*")
     
-    col1, col2 = st.columns(2)
+    st.markdown("---")  # Divider
     
-    with col1:
-        # Creator card
-        with st.container():
-            col_img, col_text = st.columns([1, 2])
-            with col_img:
-                if os.path.exists(image_files["hinda"]):
-                    st.image(image_files["hinda"], width=100)
-                else:
-                    st.error(f"Failed to load hinda.jpg at {image_files['hinda']}")
-            with col_text:
-                st.markdown("**Hind Ben Rahmoun**")  
-                st.markdown("Project Creator")  
-                st.markdown("E-LSEI Student")  
-                st.markdown("hind.benrahmoun@etu.uae.ac.ma")
-        
-        # Supervisor card
-        with st.container():
-            col_img, col_text = st.columns([1, 2])
-            with col_img:
-                if os.path.exists(image_files["souhaib"]):
-                    st.image(image_files["souhaib"], width=100)
-                else:
-                    st.error(f"Failed to load souhaib.jpg at {image_files['souhaib']}")
-            with col_text:
-                st.markdown("**Souhaib Aammou**")  
-                st.markdown("Project Supervisor")  
-                st.markdown("Computer science professor at ENS")  
-                st.markdown("aammou.souhaib@gmail.com")
-        
-        # Co-Supervisor card
-        with st.container():
-            col_img, col_text = st.columns([1, 2])
-            with col_img:
-                if os.path.exists(image_files["tarik"]):
-                    st.image(image_files["tarik"], width=100)
-                else:
-                    st.error(f"Failed to load tarik.jpg at {image_files['tarik']}")
-            with col_text:
-                st.markdown("**Tarik Touis Ghmari**")  
-                st.markdown("Co-Supervisor")  
-                st.markdown("Data Analytics at Babel")  
-                st.markdown("touistarik@gmail.com")
-    
-    with col2:
-        st.markdown("""
-        <div style="font-family: 'Montserrat', sans-serif; font-weight: 550; font-size: 1.5rem; color: #1e3a8a; margin-bottom: 1.5rem;">
-        Affiliated Institutions
-        </div>
-        """, unsafe_allow_html=True)
-        
-        # First institution with logo
-        with st.container():
-            col_logo, col_info = st.columns([1, 2])
-            with col_logo:
-                if os.path.exists(image_files["ens"]):
-                    st.image(image_files["ens"], width=150)
-                else:
-                    st.error(f"Failed to load ens.jpg at {image_files['ens']}")
-            with col_info:
-                st.markdown("**Ecole Normale Supérieure**")
-                st.markdown("Department of Mathematics and Computer Science")
-                st.markdown("Tetouan")
-                st.markdown("*Home Institution*")
-        
-        st.markdown("---")  # Divider
-        
-        # Second institution with logo
-        with st.container():
-            col_logo, col_info = st.columns([1, 2])
-            with col_logo:
-                if os.path.exists(image_files["aui"]):
-                    st.image(image_files["aui"], width=150)
-                else:
-                    st.error(f"Failed to load aui.jpg at {image_files['aui']}")
-            with col_info:
-                st.markdown("**Al-Akhawayn University**")
-                st.markdown("Center for Teaching and Learning")
-                st.markdown("Ifrane")
-                st.markdown("*Internship Host Institution*")
+    # Second institution with logo
+    with st.container():
+        col_logo, col_info = st.columns([1, 2])
+        with col_logo:
+            try:
+                st.image(image_files["aui"], width=150)
+            except FileNotFoundError:
+                st.error(f"Failed to load aui.jpg")
+        with col_info:
+            st.markdown("**Al-Akhawayn University**")
+            st.markdown("Center for Teaching and Learning")
+            st.markdown("Ifrane")
+            st.markdown("*Internship Host Institution*")
 
-# --- 1. Load the Model ---
 # --- Load the Model ---
 try:
-    with open('D:/ProjectX/lr.pkl', 'rb') as file:
+    with open('lr.pkl', 'rb') as file:
         model = joblib.load(file)
 except FileNotFoundError:
-    st.error("Error: 'lr.pkl' not found at D:/ProjectX/.")
+    st.error("Error: 'lr.pkl' not found. Make sure it's in the same directory as your script.")
     model = None
 except Exception as e:
     st.error(f"Error loading model: {e}")
     model = None
 
-# Remove lines 100–110 (simulated predict_risk)
-# Keep the predict_risk function above (lines 391–452, updated)
 
 def predict_risk(student_data):
     """
