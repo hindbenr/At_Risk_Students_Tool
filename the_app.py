@@ -150,18 +150,18 @@ def inject_css():
         /* Input field hover and focus effects */
         .stTextInput input, .stSlider div[role="slider"] {{
             transition: all 0.3s ease;
-            border: 2px solid #9c6ade;
-            border-radius: 5px;
+            border: 2px solid #E8E8E8;
+            border-radius: 6px;
             margin-bottom: 1.5rem;
         }}
         
         .stTextInput input:hover, .stSlider div[role="slider"]:hover {{
-            border-color: #7d48c1;
+            border-color: #E8E8E8;
             box-shadow: 0 0 8px rgba(125, 72, 193, 0.3);
         }}
         
         .stTextInput input:focus, .stSlider div[role="slider"]:focus {{
-            border-color: #7d48c1;
+            border-color: #E8E8E8;
             box-shadow: 0 0 12px rgba(125, 72, 193, 0.5);
             outline: none;
         }}
@@ -581,21 +581,17 @@ def individual_analysis():
         col1, col2 = st.columns(2)
 
         with col1:
-            st.markdown('<div class="tooltip">Student ID<span class="tooltiptext">Enter the unique identifier for the student</span></div>', unsafe_allow_html=True)
             student_id = st.text_input("Student ID", placeholder="Enter Student ID")
-            st.markdown('<div style="margin-bottom: 1.5rem;"></div>', unsafe_allow_html=True)
-            st.markdown('<div class="tooltip">Average Assignment Score<span class="tooltiptext">The average score across all assignments (0-100)</span></div>', unsafe_allow_html=True)
-            avg_score = st.slider("Average Assignment Score", 0, 100, 70)
-            st.markdown('<div style="margin-bottom: 1.5rem;"></div>', unsafe_allow_html=True)
-            st.markdown('<div class="tooltip">Missing Assignments<span class="tooltiptext">Number of assignments not submitted (0-10)</span></div>', unsafe_allow_html=True)
-            missing_assignments = st.slider("Number of Missing Assignments", 0, 10, 2)
+            avg_score = st.slider("Average Assignment Score", 0, 100, 70,
+                                    help="The student's average score across all assignments")
+            missing_assignments = st.slider("Number of Missing Assignments", 0, 10, 2,
+                                            help="Count of assignments not submitted")
 
         with col2:
-            st.markdown('<div class="tooltip">LMS Activity<span class="tooltiptext">Total hours spent on the Learning Management System</span></div>', unsafe_allow_html=True)
-            lms_activity = st.slider("Total LMS Activity (hours)", 0, 100, 30)
-            st.markdown('<div style="margin-bottom: 1.5rem;"></div>', unsafe_allow_html=True)
-            st.markdown('<div class="tooltip">Attendance<span class="tooltiptext">Percentage of classes attended (0-100%)</span></div>', unsafe_allow_html=True)
-            attendance = st.slider("Total Attendance (%)", 0, 100, 80)
+            lms_activity = st.slider("Total LMS Activity (hours)", 0, 100, 30,
+                                        help="Total time spent on Learning Management System")
+            attendance = st.slider("Total Attendance (%)", 0, 100, 80,
+                                    help="Percentage of classes attended")
 
         submitted = st.form_submit_button("Predict Risk")
 
@@ -614,22 +610,30 @@ def individual_analysis():
             st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
             st.markdown(f"""
             <style>
-                .result-card {{
+                .risk-badge {{
+                    padding: 0.5rem 1rem;
+                    border-radius: 5px;
+                    font-weight: bold;
+                    color: white;
+                    display: inline-block;
+                    margin-top: 0.5rem;
+                }}
+                .at-risk {{
+                    background-color: #f44336; /* Red */
+                }}
+                .not-risk {{
+                    background-color: #4caf50; /* Green */
+                }}
+                .metric-card {{
                     margin: 20px 0;
                     padding: 20px;
                     border-radius: 10px;
                     background: #e6f0fa;
                     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-                    transition: all 0.3s ease;
-                    position: relative;
-                    z-index: 1;
-                }}
-                .result-card:hover {{
-                    transform: scale(1.02);
-                    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
                 }}
             </style>
-            <div class="result-card">
+            <div style="margin: 20px 0; padding: 20px; border-radius: 10px;
+                         background: #e6f0fa; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                 <h3>Prediction Result</h3>
                 <div class="risk-badge {prediction['risk_status'].lower().replace(' ', '-')}">
                     {prediction['risk_status']}
