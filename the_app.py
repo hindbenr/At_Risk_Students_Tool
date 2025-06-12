@@ -566,10 +566,15 @@ def predict_risk(student_data):
     
 def individual_analysis():
     st.markdown("""
-<div style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 2.5rem; color: #1e3a8a; margin-bottom: 1.5rem;">
-Individual Student Analysis
-</div>
-""", unsafe_allow_html=True)
+    <div style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 2.5rem; color: #1e3a8a; margin-bottom: 1.5rem;">
+    Individual Student Analysis
+    </div>
+    <div class="metric-card">
+        <p style="font-family: 'Montserrat', sans-serif; font-size: 1.1rem; color: #333;">
+            On this page, instructors can assess the risk status of an individual student by entering their academic and engagement data. Provide the student's ID, average assignment score, number of missing assignments, total LMS activity (in hours), and attendance percentage. After submitting, the system will predict whether the student is at risk of academic difficulties and display a risk score along with visualizations of their performance metrics.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
     with st.form("student_form"):
         col1, col2 = st.columns(2)
