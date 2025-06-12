@@ -150,19 +150,19 @@ def inject_css():
         /* Input field hover and focus effects */
         .stTextInput input, .stSlider div[role="slider"] {{
             transition: all 0.3s ease;
-            border: 2px solid #ccc;
+            border: 2px solid #9c6ade;
             border-radius: 5px;
             margin-bottom: 1.5rem;
         }}
         
         .stTextInput input:hover, .stSlider div[role="slider"]:hover {{
-            border-color: #999;
-            box-shadow: 0 0 8px rgba(153, 153, 153, 0.3);
+            border-color: #7d48c1;
+            box-shadow: 0 0 8px rgba(125, 72, 193, 0.3);
         }}
         
         .stTextInput input:focus, .stSlider div[role="slider"]:focus {{
-            border-color: #999;
-            box-shadow: 0 0 12px rgba(153, 153, 153, 0.5);
+            border-color: #7d48c1;
+            box-shadow: 0 0 12px rgba(125, 72, 193, 0.5);
             outline: none;
         }}
         
@@ -178,7 +178,7 @@ def inject_css():
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }}
         
-        /* Sidebar navigation */
+        /* Sidebar navigation hover effect */
         .stRadio > div > label {{
             transition: all 0.3s ease;
             padding: 10px;
@@ -480,11 +480,11 @@ except Exception as e:
 
 def predict_risk(student_data):
     """
-    Fully fixed prediction algorithm that properly handles categorical and numerical features.
+    Fully fixed prediction function that properly handles categorical and numerical features.
     """
     if model is None:
         st.error("Model not loaded. Please ensure 'lr.pkl' is available.")
-        return {'status': 'Error', 'score': 0}
+        return {'risk_status': 'Error', 'risk_score': 0}
     
     try:
         # 1. Load the preprocessor
@@ -495,7 +495,7 @@ def predict_risk(student_data):
         input_features = {
             # Core features from user input (convert to float)
             'Average_assignment_score': float(student_data.get('avg_score', 0)),
-            'Num_of_missing_assingment': float(student_data.get('missing_assignments', 0)),
+            'Num_of_missing_assingnment': float(student_data.get('missing_assignments', 0)),
             'Total_LMS_Activity': float(student_data.get('lms_activity', 0)),
             'rate_Of_Globale_Attandence': float(student_data.get('attendance', 0)),
             
@@ -543,7 +543,7 @@ def predict_risk(student_data):
             st.error("Possible causes:")
             st.error("- Mismatch between input features and preprocessor expectations")
             st.error("- Incorrect data types for categorical/numerical features")
-            return {'status': 'Error', 'score': 0}
+            return {'risk_status': 'Error', 'risk_score': 0}
         
         # 5. Make prediction
         try:
@@ -552,17 +552,17 @@ def predict_risk(student_data):
             risk_score = model.predict_proba(processed_data)[0][1] * 100 if hasattr(model, 'predict_proba') else (100 if prediction[0] == 1 else 0)
             
             return {
-                'status': risk_status,
-                'score': round(risk_score, 2)
+                'risk_status': risk_status,
+                'risk_score': round(risk_score, 2)
             }
             
         except Exception as e:
             st.error(f"Prediction failed: {str(e)}")
-            return {'status': 'Error', 'score': 0}
+            return {'risk_status': 'Error', 'risk_score': 0}
             
     except Exception as e:
         st.error(f"Unexpected error: {str(e)}")
-        return {'status': 'Error', 'score': 0}
+        return {'risk_status': 'Error', 'risk_score': 0}
     
 def individual_analysis():
     st.markdown("""
@@ -631,10 +631,10 @@ def individual_analysis():
             </style>
             <div class="result-card">
                 <h3>Prediction Result</h3>
-                <div class="risk-badge {prediction['status'].lower().replace(' ', '-')}">
-                    {prediction['status']}
+                <div class="risk-badge {prediction['risk_status'].lower().replace(' ', '-')}">
+                    {prediction['risk_status']}
                 </div>
-                <p>Risk Score: {prediction['score']:.2f}%</p>
+                <p>Risk Score: {prediction['risk_score']:.2f}%</p>
             </div>
             """, unsafe_allow_html=True)
 
@@ -665,9 +665,9 @@ def individual_analysis():
             st.markdown(f"""
             <div class="metric-card">
                 <h3>Analysis</h3>
-                <p>Based on the provided data, the model predicts this student is <strong>{prediction['status']}</strong>
-                with a risk score of <strong>{prediction['score']:.2f}%</strong>
-                due to {f"a lower average score ({avg_score}%) and a higher number of missing assignments ({missing_assignments})" if prediction['status'] == 'At-Risk' else "relatively consistent performance across the monitored metrics"}.</p>
+                <p>Based on the provided data, the model predicts this student is <strong>{prediction['risk_status']}</strong>
+                with a risk score of <strong>{prediction['risk_score']:.2f}%</strong>
+                due to {f"a lower average score ({avg_score}%) and a higher number of missing assignments ({missing_assignments})" if prediction['risk_status'] == 'At-Risk' else "relatively consistent performance across the monitored metrics"}.</p>
             </div>
             """, unsafe_allow_html=True)
 
@@ -678,7 +678,7 @@ def batch_analysis():
     </div>
     <div class="metric-card">
         <p style="font-family: 'Montserrat', sans-serif; font-size: 1.1rem; color: #333;">
-            On this page, instructors can upload a CSV file containing data for multiple students to perform batch predictions. The CSV must include a 'Student_id' column and all required features (e.g., Average_assignment_score, Num_of_missing_assingment, Total_LMS_Activity, rate_Of_Globale_Attandence, and others). The system will predict the risk status for each student and display the results in two groups: At-Risk and Not At-Risk, along with visualizations of risk distribution and feature importance.
+            On this page, instructors can upload a CSV file containing data for multiple students to perform batch predictions. The CSV must include a 'Student_id' column and all required features (e.g., Average_assignment_score, Num_of_missing_assingnment, Total_LMS_Activity, rate_Of_Globale_Attandence, and others). The system will predict the risk status for each student and display the results in two groups: At-Risk and Not At-Risk, along with visualizations of risk distribution and feature importance.
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -720,7 +720,7 @@ def batch_analysis():
                 'total_canvas_ressources', 'num_attandence_inPerson', 'num_total_absence',
                 'num_attendance_online', 'rate_Of_Globale_Attandence', 'Camera_activation_num',
                 'Unmuted_mic_num', 'Q&A_teams_ participation', 'InMeeting_Duration',
-                'Num_of_missing_assingment', 'Num_of_submitted_assignment',
+                'Num_of_missing_assingnment', 'Num_of_submitted_assignment',
                 'Average_assignment_score', 'num_of viewed_ ressources', 'Total_LMS_Activity'
             ]
             all_features = numerical_features + categorical_features
