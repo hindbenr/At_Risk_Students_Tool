@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -8,6 +9,7 @@ import joblib
 import time
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.compose import ColumnTransformer
+import time 
 
 # ===== SETUP =====
 st.set_page_config(
@@ -16,7 +18,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for Montserrat font, blue theme, enhanced interactivity, and spacing
+# Custom CSS for Montserrat font, blue theme, and animations
 def inject_css():
     st.markdown(f"""
     <style>
@@ -34,23 +36,12 @@ def inject_css():
             background-color: #9c6ade;
             color: white;
             border: none;
-            border-radius: 8px;
-            padding: 10px 20px;
             transition: all 0.3s ease;
-            position: relative;
-            z-index: 1;
-            margin-top: 1.5rem;
         }}
         
         .stButton>button:hover {{
             background-color: #7d48c1;
             transform: scale(1.05);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-        }}
-        
-        .stButton>button:active {{
-            transform: scale(0.95);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }}
         
         .metric-card {{
@@ -59,29 +50,11 @@ def inject_css():
             padding: 20px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 2rem;
         }}
         
         .metric-card:hover {{
             transform: translateY(-5px);
-            box-shadow: 0 10px 15px rgba(0,0,0,0.2);
-        }}
-        
-        .metric-card::after {{
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: 0.5s;
-        }}
-        
-        .metric-card:hover::after {{
-            left: 100%;
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
         }}
         
         .risk-badge {{
@@ -90,13 +63,6 @@ def inject_css():
             font-weight: bold;
             display: inline-block;
             transition: all 0.3s ease;
-            position: relative;
-            z-index: 2;
-        }}
-        
-        .risk-badge:hover {{
-            transform: scale(1.1);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }}
         
         .at-risk {{
@@ -119,86 +85,28 @@ def inject_css():
         .tooltip {{
             position: relative;
             display: inline-block;
-            cursor: pointer;
-            margin-bottom: 1rem;
         }}
         
         .tooltip .tooltiptext {{
             visibility: hidden;
-            width: 220px;
+            width: 200px;
             background-color: #555;
             color: #fff;
             text-align: center;
             border-radius: 6px;
-            padding: 8px;
+            padding: 5px;
             position: absolute;
-            z-index: 10;
+            z-index: 1;
             bottom: 125%;
             left: 50%;
-            margin-left: -110px;
+            margin-left: -100px;
             opacity: 0;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            transition: opacity 0.3s;
         }}
         
         .tooltip:hover .tooltiptext {{
             visibility: visible;
             opacity: 1;
-            transform: translateY(-5px);
-        }}
-        
-        /* Input field hover and focus effects */
-        .stTextInput input, .stSlider div[role="slider"] {{
-            transition: all 0.3s ease;
-            border: 2px solid #ccc;
-            border-radius: 5px;
-            margin-bottom: 1.5rem;
-        }}
-        
-        .stTextInput input:hover, .stSlider div[role="slider"]:hover {{
-            border-color: #999;
-            box-shadow: 0 0 8px rgba(153, 153, 153, 0.3);
-        }}
-        
-        .stTextInput input:focus, .stSlider div[role="slider"]:focus {{
-            border-color: #999;
-            box-shadow: 0 0 12px rgba(153, 153, 153, 0.5);
-            outline: none;
-        }}
-        
-        /* File uploader hover effect */
-        .stFileUploader {{
-            position: relative;
-            transition: all 0.3s ease;
-            margin-bottom: 2rem;
-        }}
-        
-        .stFileUploader:hover {{
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }}
-        
-        /* Sidebar navigation */
-        .stRadio > div > label {{
-            transition: all 0.3s ease;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 0.5rem;
-        }}
-        
-        .stRadio > div > label:hover {{
-            background-color: #e6f0fa;
-            transform: translateX(5px);
-        }}
-        
-        /* Chart containers */
-        .stPlotlyChart {{
-            margin-bottom: 2rem;
-        }}
-        
-        /* Column spacing */
-        .stColumn > div {{
-            padding: 0 1rem;
         }}
     </style>
     """, unsafe_allow_html=True)
@@ -228,18 +136,13 @@ def about_page():
             box-shadow: 0 8px 15px rgba(0,0,0,0.1);
             text-transform: uppercase;
             letter-spacing: 2px;
-            transition: all 0.3s ease;
-        }
-        .project-title:hover {
-            transform: scale(1.02);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
         }
         .about-title {
             font-family: 'Montserrat', sans-serif;
             font-weight: 600;
             font-size: 2rem;
             color: #1e3a8a;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
         .section-title {
             font-family: 'Montserrat', sans-serif;
@@ -247,7 +150,7 @@ def about_page():
             font-size: 1.8rem;
             color: #1e3a8a;
             margin-top: 2rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
         .metric-circle {
             width: 150px;
@@ -262,11 +165,9 @@ def about_page():
             margin: 0 auto;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
-            position: relative;
-            z-index: 1;
         }
         .metric-circle:hover {
-            transform: scale(1.05) rotate(2deg);
+            transform: scale(1.05);
             box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
         .metric-label {
@@ -282,23 +183,20 @@ def about_page():
             font-size: 2rem;
             color: #1e3a8a;
         }
-        .about-container {
-            margin-bottom: 2rem;
-        }
     </style>
     """, unsafe_allow_html=True)
 
     # Big Project Title
     st.markdown('<div class="project-title">At-Risk Student Prediction System</div>', unsafe_allow_html=True)
-    st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
 
     # Page Title
     st.markdown('<div class="about-title">About This Project</div>', unsafe_allow_html=True)
 
+    # Rest of the existing about_page content remains the same...
     # Project Overview
     st.markdown("""
         <div style="background-color: #e6f0fa; padding: 2rem; border-radius: 10px; 
-                    box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 2rem;" class="metric-card">
+                    box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 2rem;">
             <p style="font-family: 'Montserrat', sans-serif; font-size: 1.1rem; color: #333;">
                 This project aims to identify students who may be at risk of academic difficulties 
                 to enable timely intervention and support. It leverages a machine learning model 
@@ -310,7 +208,7 @@ def about_page():
 
     # Predictive Model Information
     st.markdown("""
-    <div style="font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 2rem; color: #1e3a8a; margin-bottom: 2rem;">
+    <div style="font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 2rem; color: #1e3a8a; margin-bottom: 1.5rem;">
     Predictive Model Information
     </div>
     """, unsafe_allow_html=True)
@@ -349,12 +247,10 @@ def about_page():
             </div>
         """, unsafe_allow_html=True)
 
-    st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
-
     # Model Description
     st.markdown("""
         <div style="background-color: #e6f0fa; padding: 2rem; border-radius: 10px; 
-                    box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 2rem;" class="metric-card">
+                    box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin: 2rem 0;">
             <p style="font-family: 'Montserrat', sans-serif; font-size: 1.1rem; color: #333;">
                 The model is a Logistic Regression trained on historical student performance data 
                 from over 5,000 students across multiple academic years, including assignment scores, 
@@ -365,7 +261,7 @@ def about_page():
 
     # Project Creator & Supervisors
     st.markdown("""
-    <div style="font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 2rem; color: #1e3a8a; margin-bottom: 2rem;">
+    <div style="font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 2rem; color: #1e3a8a; margin-bottom: 1.5rem;">
     Project Creator & Supervisors
     </div>
     """, unsafe_allow_html=True)
@@ -395,7 +291,6 @@ def about_page():
                 st.markdown("Project Creator")  
                 st.markdown("E-LSEI Student")  
                 st.markdown("hind.benrahmoun@etu.uae.ac.ma")
-            st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
         
         # Supervisor card
         with st.container():
@@ -410,7 +305,6 @@ def about_page():
                 st.markdown("Project Supervisor")  
                 st.markdown("Computer science professor at ENS")  
                 st.markdown("aammou.souhaib@gmail.com")
-            st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
         
         # Co-Supervisor card
         with st.container():
@@ -425,11 +319,10 @@ def about_page():
                 st.markdown("Co-Supervisor")  
                 st.markdown("Data Analytics at Babel")  
                 st.markdown("touistarik@gmail.com")
-            st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
     
     with col2:
         st.markdown("""
-        <div style="font-family: 'Montserrat', sans-serif; font-weight: 550; font-size: 1.5rem; color: #1e3a8a; margin-bottom: 2rem;">
+        <div style="font-family: 'Montserrat', sans-serif; font-weight: 550; font-size: 1.5rem; color: #1e3a8a; margin-bottom: 1.5rem;">
         Affiliated Institutions
         </div>
         """, unsafe_allow_html=True)
@@ -447,10 +340,8 @@ def about_page():
                 st.markdown("Department of Mathematics and Computer Science")
                 st.markdown("Tetouan")
                 st.markdown("*Home Institution*")
-            st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
         
         st.markdown("---")  # Divider
-        st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
         
         # Second institution with logo
         with st.container():
@@ -465,7 +356,6 @@ def about_page():
                 st.markdown("Center for Teaching and Learning")
                 st.markdown("Ifrane")
                 st.markdown("*Internship Host Institution*")
-            st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
 
 # --- Load the Model ---
 try:
@@ -480,11 +370,11 @@ except Exception as e:
 
 def predict_risk(student_data):
     """
-    Fully fixed prediction algorithm that properly handles categorical and numerical features.
+    Fully fixed prediction function that properly handles categorical and numerical features.
     """
     if model is None:
         st.error("Model not loaded. Please ensure 'lr.pkl' is available.")
-        return {'status': 'Error', 'score': 0}
+        return {'risk_status': 'Error', 'risk_score': 0}
     
     try:
         # 1. Load the preprocessor
@@ -495,7 +385,7 @@ def predict_risk(student_data):
         input_features = {
             # Core features from user input (convert to float)
             'Average_assignment_score': float(student_data.get('avg_score', 0)),
-            'Num_of_missing_assingment': float(student_data.get('missing_assignments', 0)),
+            'Num_of_missing_assingnment': float(student_data.get('missing_assignments', 0)),
             'Total_LMS_Activity': float(student_data.get('lms_activity', 0)),
             'rate_Of_Globale_Attandence': float(student_data.get('attendance', 0)),
             
@@ -543,7 +433,7 @@ def predict_risk(student_data):
             st.error("Possible causes:")
             st.error("- Mismatch between input features and preprocessor expectations")
             st.error("- Incorrect data types for categorical/numerical features")
-            return {'status': 'Error', 'score': 0}
+            return {'risk_status': 'Error', 'risk_score': 0}
         
         # 5. Make prediction
         try:
@@ -552,50 +442,40 @@ def predict_risk(student_data):
             risk_score = model.predict_proba(processed_data)[0][1] * 100 if hasattr(model, 'predict_proba') else (100 if prediction[0] == 1 else 0)
             
             return {
-                'status': risk_status,
-                'score': round(risk_score, 2)
+                'risk_status': risk_status,
+                'risk_score': round(risk_score, 2)
             }
             
         except Exception as e:
             st.error(f"Prediction failed: {str(e)}")
-            return {'status': 'Error', 'score': 0}
+            return {'risk_status': 'Error', 'risk_score': 0}
             
     except Exception as e:
         st.error(f"Unexpected error: {str(e)}")
-        return {'status': 'Error', 'score': 0}
+        return {'risk_status': 'Error', 'risk_score': 0}
     
 def individual_analysis():
     st.markdown("""
-    <div style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 2.5rem; color: #1e3a8a; margin-bottom: 1.5rem;">
-    Individual Student Analysis
-    </div>
-    <div class="metric-card">
-        <p style="font-family: 'Montserrat', sans-serif; font-size: 1.1rem; color: #333;">
-            On this page, instructors can assess the risk status of an individual student by entering their academic and engagement data. Provide the student's ID, average assignment score, number of missing assignments, total LMS activity (in hours), and attendance percentage. After submitting, the system will predict whether the student is at risk of academic difficulties and display a risk score along with visualizations of their performance metrics.
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
-    st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
+<div style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 2.5rem; color: #1e3a8a; margin-bottom: 1.5rem;">
+Individual Student Analysis
+</div>
+""", unsafe_allow_html=True)
 
     with st.form("student_form"):
         col1, col2 = st.columns(2)
 
         with col1:
-            st.markdown('<div class="tooltip">Student ID<span class="tooltiptext">Enter the unique identifier for the student</span></div>', unsafe_allow_html=True)
             student_id = st.text_input("Student ID", placeholder="Enter Student ID")
-            st.markdown('<div style="margin-bottom: 1.5rem;"></div>', unsafe_allow_html=True)
-            st.markdown('<div class="tooltip">Average Assignment Score<span class="tooltiptext">The average score across all assignments (0-100)</span></div>', unsafe_allow_html=True)
-            avg_score = st.slider("Average Assignment Score", 0, 100, 70)
-            st.markdown('<div style="margin-bottom: 1.5rem;"></div>', unsafe_allow_html=True)
-            st.markdown('<div class="tooltip">Missing Assignments<span class="tooltiptext">Number of assignments not submitted (0-10)</span></div>', unsafe_allow_html=True)
-            missing_assignments = st.slider("Number of Missing Assignments", 0, 10, 2)
+            avg_score = st.slider("Average Assignment Score", 0, 100, 70,
+                                    help="The student's average score across all assignments")
+            missing_assignments = st.slider("Number of Missing Assignments", 0, 10, 2,
+                                            help="Count of assignments not submitted")
 
         with col2:
-            st.markdown('<div class="tooltip">LMS Activity<span class="tooltiptext">Total hours spent on the Learning Management System</span></div>', unsafe_allow_html=True)
-            lms_activity = st.slider("Total LMS Activity (hours)", 0, 100, 30)
-            st.markdown('<div style="margin-bottom: 1.5rem;"></div>', unsafe_allow_html=True)
-            st.markdown('<div class="tooltip">Attendance<span class="tooltiptext">Percentage of classes attended (0-100%)</span></div>', unsafe_allow_html=True)
-            attendance = st.slider("Total Attendance (%)", 0, 100, 80)
+            lms_activity = st.slider("Total LMS Activity (hours)", 0, 100, 30,
+                                        help="Total time spent on Learning Management System")
+            attendance = st.slider("Total Attendance (%)", 0, 100, 80,
+                                    help="Percentage of classes attended")
 
         submitted = st.form_submit_button("Predict Risk")
 
@@ -611,34 +491,39 @@ def individual_analysis():
             prediction = predict_risk(student_data)
             time.sleep(1)  # Simulate processing
 
-            st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
             st.markdown(f"""
             <style>
-                .result-card {{
+                .risk-badge {{
+                    padding: 0.5rem 1rem;
+                    border-radius: 5px;
+                    font-weight: bold;
+                    color: white;
+                    display: inline-block;
+                    margin-top: 0.5rem;
+                }}
+                .at-risk {{
+                    background-color: #f44336; /* Red */
+                }}
+                .not-risk {{
+                    background-color: #4caf50; /* Green */
+                }}
+                .metric-card {{
                     margin: 20px 0;
                     padding: 20px;
                     border-radius: 10px;
                     background: #e6f0fa;
                     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-                    transition: all 0.3s ease;
-                    position: relative;
-                    z-index: 1;
-                }}
-                .result-card:hover {{
-                    transform: scale(1.02);
-                    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
                 }}
             </style>
-            <div class="result-card">
+            <div style="margin: 20px 0; padding: 20px; border-radius: 10px;
+                         background: #e6f0fa; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                 <h3>Prediction Result</h3>
-                <div class="risk-badge {prediction['status'].lower().replace(' ', '-')}">
-                    {prediction['status']}
+                <div class="risk-badge {prediction['risk_status'].lower().replace(' ', '-')}">
+                    {prediction['risk_status']}
                 </div>
-                <p>Risk Score: {prediction['score']:.2f}%</p>
+                <p>Risk Score: {prediction['risk_score']:.2f}%</p>
             </div>
             """, unsafe_allow_html=True)
-
-            st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
 
             # Performance Overview Chart
             fig1 = px.bar(
@@ -648,10 +533,8 @@ def individual_analysis():
             )
             st.plotly_chart(fig1, use_container_width=True)
 
-            st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
-
-            # Engagement Level Chart
-            total_assignments = 10
+            # Engagement Level Chart (Adjust based on your interpretation of missing assignments)
+            total_assignments = 10  # Assuming a total of 10 assignments for this example
             completed_assignments = total_assignments - missing_assignments
             fig2 = px.pie(
                 names=["Completed Assignments", "Missing Assignments"],
@@ -660,14 +543,12 @@ def individual_analysis():
             )
             st.plotly_chart(fig2, use_container_width=True)
 
-            st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
-
             st.markdown(f"""
             <div class="metric-card">
                 <h3>Analysis</h3>
-                <p>Based on the provided data, the model predicts this student is <strong>{prediction['status']}</strong>
-                with a risk score of <strong>{prediction['score']:.2f}%</strong>
-                due to {f"a lower average score ({avg_score}%) and a higher number of missing assignments ({missing_assignments})" if prediction['status'] == 'At-Risk' else "relatively consistent performance across the monitored metrics"}.</p>
+                <p>Based on the provided data, the model predicts this student is <strong>{prediction['risk_status']}</strong>
+                with a risk score of <strong>{prediction['risk_score']:.2f}%</strong>
+                due to {f"a lower average score ({avg_score}%) and a higher number of missing assignments ({missing_assignments})" if prediction['risk_status'] == 'At-Risk' else "relatively consistent performance across the monitored metrics"}.</p>
             </div>
             """, unsafe_allow_html=True)
 
@@ -676,13 +557,7 @@ def batch_analysis():
     <div style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 2.5rem; color: #1e3a8a; margin-bottom: 1.5rem;">
     Batch Student Analysis
     </div>
-    <div class="metric-card">
-        <p style="font-family: 'Montserrat', sans-serif; font-size: 1.1rem; color: #333;">
-            On this page, instructors can upload a CSV file containing data for multiple students to perform batch predictions. The CSV must include a 'Student_id' column and all required features (e.g., Average_assignment_score, Num_of_missing_assingment, Total_LMS_Activity, rate_Of_Globale_Attandence, and others). The system will predict the risk status for each student and display the results in two groups: At-Risk and Not At-Risk, along with visualizations of risk distribution and feature importance.
-        </p>
-    </div>
     """, unsafe_allow_html=True)
-    st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
     
     uploaded_file = st.file_uploader("Import Student Data (.csv file)", type="csv")
     
@@ -691,7 +566,6 @@ def batch_analysis():
             # Load the data
             df = pd.read_csv(uploaded_file)
             st.success(f"Successfully uploaded {len(df)} student records!")
-            st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
             
             # Check if Student_id is present
             if 'Student_id' not in df.columns:
@@ -720,7 +594,7 @@ def batch_analysis():
                 'total_canvas_ressources', 'num_attandence_inPerson', 'num_total_absence',
                 'num_attendance_online', 'rate_Of_Globale_Attandence', 'Camera_activation_num',
                 'Unmuted_mic_num', 'Q&A_teams_ participation', 'InMeeting_Duration',
-                'Num_of_missing_assingment', 'Num_of_submitted_assignment',
+                'Num_of_missing_assingnment', 'Num_of_submitted_assignment',
                 'Average_assignment_score', 'num_of viewed_ ressources', 'Total_LMS_Activity'
             ]
             all_features = numerical_features + categorical_features
@@ -770,29 +644,26 @@ def batch_analysis():
                     return
             
             # Display results
-            st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
             st.subheader("Batch Prediction Results")
             
             # Display student IDs in two columns
             col1, col2 = st.columns(2)
             
             with col1:
-                st.markdown('<div class="tooltip"><strong>At-Risk Students</strong><span class="tooltiptext">Students predicted to be at risk of academic difficulties</span></div>', unsafe_allow_html=True)
+                st.markdown("**At-Risk Students**")
                 at_risk_ids = results_df[results_df['Predicted Risk'] == 'At-Risk']['Student_id']
                 if len(at_risk_ids) > 0:
                     st.dataframe(at_risk_ids.reset_index(drop=True))
                 else:
                     st.info("No at-risk students identified")
-                st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
             
             with col2:
-                st.markdown('<div class="tooltip"><strong>Not At-Risk Students</strong><span class="tooltiptext">Students predicted to be performing adequately</span></div>', unsafe_allow_html=True)
+                st.markdown("**Not At-Risk Students**")
                 not_at_risk_ids = results_df[results_df['Predicted Risk'] == 'Not At-Risk']['Student_id']
                 if len(not_at_risk_ids) > 0:
                     st.dataframe(not_at_risk_ids.reset_index(drop=True))
                 else:
                     st.info("All students are at-risk")
-                st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
             
             # Risk Distribution Chart
             risk_counts = results_df['Predicted Risk'].value_counts()
@@ -802,7 +673,6 @@ def batch_analysis():
                 title="Risk Distribution"
             )
             st.plotly_chart(fig1, use_container_width=True)
-            st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
             
             # Feature Importance
             if hasattr(model, 'coef_'):
@@ -816,14 +686,11 @@ def batch_analysis():
                         labels={'x': 'Feature', 'y': 'Importance'}
                     )
                     st.plotly_chart(fig2, use_container_width=True)
-                    st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
                 except Exception as e:
                     st.warning(f"Could not display feature importance: {str(e)}")
-                    st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
             
         except Exception as e:
             st.error(f"Error processing file: {str(e)}")
-            st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
 
 # ===== MAIN APP =====
 def main():
