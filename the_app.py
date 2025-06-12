@@ -575,22 +575,27 @@ def individual_analysis():
         </p>
     </div>
     """, unsafe_allow_html=True)
+    st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
 
     with st.form("student_form"):
         col1, col2 = st.columns(2)
 
         with col1:
+            st.markdown('<div class="tooltip">Student ID<span class="tooltiptext">Enter the unique identifier for the student</span></div>', unsafe_allow_html=True)
             student_id = st.text_input("Student ID", placeholder="Enter Student ID")
-            avg_score = st.slider("Average Assignment Score", 0, 100, 70,
-                                    help="The student's average score across all assignments")
-            missing_assignments = st.slider("Number of Missing Assignments", 0, 10, 2,
-                                            help="Count of assignments not submitted")
+            st.markdown('<div style="margin-bottom: 1.5rem;"></div>', unsafe_allow_html=True)
+            st.markdown('<div class="tooltip">Average Assignment Score<span class="tooltiptext">The average score across all assignments (0-100)</span></div>', unsafe_allow_html=True)
+            avg_score = st.slider("Average Assignment Score", 0, 100, 70)
+            st.markdown('<div style="margin-bottom: 1.5rem;"></div>', unsafe_allow_html=True)
+            st.markdown('<div class="tooltip">Missing Assignments<span class="tooltiptext">Number of assignments not submitted (0-10)</span></div>', unsafe_allow_html=True)
+            missing_assignments = st.slider("Number of Missing Assignments", 0, 10, 2)
 
         with col2:
-            lms_activity = st.slider("Total LMS Activity (hours)", 0, 100, 30,
-                                        help="Total time spent on Learning Management System")
-            attendance = st.slider("Total Attendance (%)", 0, 100, 80,
-                                    help="Percentage of classes attended")
+            st.markdown('<div class="tooltip">LMS Activity<span class="tooltiptext">Total hours spent on the Learning Management System</span></div>', unsafe_allow_html=True)
+            lms_activity = st.slider("Total LMS Activity (hours)", 0, 100, 30)
+            st.markdown('<div style="margin-bottom: 1.5rem;"></div>', unsafe_allow_html=True)
+            st.markdown('<div class="tooltip">Attendance<span class="tooltiptext">Percentage of classes attended (0-100%)</span></div>', unsafe_allow_html=True)
+            attendance = st.slider("Total Attendance (%)", 0, 100, 80)
 
         submitted = st.form_submit_button("Predict Risk")
 
@@ -606,39 +611,34 @@ def individual_analysis():
             prediction = predict_risk(student_data)
             time.sleep(1)  # Simulate processing
 
+            st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
             st.markdown(f"""
             <style>
-                .risk-badge {{
-                    padding: 0.5rem 1rem;
-                    border-radius: 5px;
-                    font-weight: bold;
-                    color: white;
-                    display: inline-block;
-                    margin-top: 0.5rem;
-                }}
-                .at-risk {{
-                    background-color: #ff6b6b; /* Red */
-                }}
-                .not-risk {{
-                    background-color: #51cf66; /* Green */
-                }}
-                .metric-card {{
+                .result-card {{
                     margin: 20px 0;
                     padding: 20px;
                     border-radius: 10px;
                     background: #e6f0fa;
                     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                    transition: all 0.3s ease;
+                    position: relative;
+                    z-index: 1;
+                }}
+                .result-card:hover {{
+                    transform: scale(1.02);
+                    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
                 }}
             </style>
-            <div style="margin: 20px 0; padding: 20px; border-radius: 10px;
-                         background: #e6f0fa; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <div class="result-card">
                 <h3>Prediction Result</h3>
-                <div class="risk-badge {prediction['risk_status'].lower().replace(' ', '-')}">
-                    {prediction['risk_status']}
+                <div class="risk-badge {prediction['status'].lower().replace(' ', '-')}">
+                    {prediction['status']}
                 </div>
-                <p>Risk Score: {prediction['risk_score']:.2f}%</p>
+                <p>Risk Score: {prediction['score']:.2f}%</p>
             </div>
             """, unsafe_allow_html=True)
+
+            st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
 
             # Performance Overview Chart
             fig1 = px.bar(
@@ -648,8 +648,10 @@ def individual_analysis():
             )
             st.plotly_chart(fig1, use_container_width=True)
 
-            # Engagement Level Chart (Adjust based on your interpretation of missing assignments)
-            total_assignments = 10  # Assuming a total of 10 assignments for this example
+            st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
+
+            # Engagement Level Chart
+            total_assignments = 10
             completed_assignments = total_assignments - missing_assignments
             fig2 = px.pie(
                 names=["Completed Assignments", "Missing Assignments"],
@@ -658,12 +660,14 @@ def individual_analysis():
             )
             st.plotly_chart(fig2, use_container_width=True)
 
+            st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
+
             st.markdown(f"""
             <div class="metric-card">
                 <h3>Analysis</h3>
-                <p>Based on the provided data, the model predicts this student is <strong>{prediction['risk_status']}</strong>
-                with a risk score of <strong>{prediction['risk_score']:.2f}%</strong>
-                due to {f"a lower average score ({avg_score}%) and a higher number of missing assignments ({missing_assignments})" if prediction['risk_status'] == 'At-Risk' else "relatively consistent performance across the monitored metrics"}.</p>
+                <p>Based on the provided data, the model predicts this student is <strong>{prediction['status']}</strong>
+                with a risk score of <strong>{prediction['score']:.2f}%</strong>
+                due to {f"a lower average score ({avg_score}%) and a higher number of missing assignments ({missing_assignments})" if prediction['status'] == 'At-Risk' else "relatively consistent performance across the monitored metrics"}.</p>
             </div>
             """, unsafe_allow_html=True)
 
