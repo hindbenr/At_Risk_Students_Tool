@@ -632,7 +632,7 @@ def individual_analysis():
                 }}
             </style>
             <div style="margin: 20px 0; padding: 20px; border-radius: 10px;
-                            box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                         background: #e6f0fa; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                 <h3>Prediction Result</h3>
                 <div class="risk-badge {prediction['risk_status'].lower().replace(' ', '-')}">
                     {prediction['risk_status']}
