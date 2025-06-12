@@ -617,10 +617,10 @@ def individual_analysis():
                     margin-top: 0.5rem;
                 }}
                 .at-risk {{
-                    background-color: #f44336; /* Red */
+                    background-color: #ff6b6b; /* Red */
                 }}
                 .not-risk {{
-                    background-color: #4caf50; /* Green */
+                    background-color: #51cf66; /* Green */
                 }}
                 .metric-card {{
                     margin: 20px 0;
