@@ -396,7 +396,7 @@ def about_page():
                 st.markdown("Project Creator")  
                 st.markdown("E-LSEI Student")  
                 st.markdown("hind.benrahmoun@etu.uae.ac.ma")
-            st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
+            st.markdown('<div style="margin-bottom: 1rem;"></div>', unsafe_allow_html=True)
         
         # Supervisor card
         with st.container():
@@ -411,7 +411,7 @@ def about_page():
                 st.markdown("Project Supervisor")  
                 st.markdown("Computer science professor at ENS")  
                 st.markdown("aammou.souhaib@gmail.com")
-            st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
+            st.markdown('<div style="margin-bottom: 1rem;"></div>', unsafe_allow_html=True)
         
         # Co-Supervisor card
         with st.container():
