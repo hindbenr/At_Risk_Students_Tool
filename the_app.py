@@ -648,8 +648,8 @@ def individual_analysis():
             <div style="margin: 20px 0; padding: 20px; border-radius: 10px;
                         background: #e6f0fa; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                 <h3>Prediction Result</h3>
-                <div class="risk-badge {prediction['risk_status'].lower().replace(' ', '-')}" 
-                    style="{'background-color: #ff6b6b;' if prediction['risk_status'] == 'At-Risk' else 'background-color: #51cf66;'}">
+                <div class="risk-badge {prediction['risk_status'].lower().replace(' ', '-')}"
+                    style="background-color: {'#ff6b6b !important' if prediction['risk_status'] == 'At-Risk' else '#51cf66 !important'}">
                     {prediction['risk_status']}
                 </div>
                 <p>Risk Score: {prediction['risk_score']:.2f}%</p>
