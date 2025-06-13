@@ -572,7 +572,7 @@ def individual_analysis():
     </div>
     <div class="metric-card">
         <p style="font-family: 'Montserrat', sans-serif; font-size: 1.1rem; color: #333;">
-            On this page, instructors can assess the risk status of an individual student by entering their academic and engagement data. Provide the student's ID, average assignment score, number of missing assignments, total LMS activity (in hours), and attendance percentage. After submitting, the system will predict whether the student is at risk of academic difficulties and display a risk score along with visualizations of their performance metrics.
+            The Individual Analysis section enables instructors to evaluate a single student's academic risk. Enter the student's data, including Student_id, average assignment score, number of missing assignments, total LMS activity (in hours), attendance percentage, using the provided form. The system will predict the student's risk status, categorize them as At-Risk or Not At-Risk, and display a risk score with visualizations of performance metrics.
         </p>
     </div>
     """, unsafe_allow_html=True)
