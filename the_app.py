@@ -426,7 +426,7 @@ def about_page():
                 st.markdown("Co-Supervisor")  
                 st.markdown("Data Analytics at Babel")  
                 st.markdown("touistarik@gmail.com")
-            st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
+            st.markdown('<div style="margin-bottom: 1rem;"></div>', unsafe_allow_html=True)
     
     with col2:
         st.markdown("""
@@ -448,10 +448,10 @@ def about_page():
                 st.markdown("Department of Mathematics and Computer Science")
                 st.markdown("Tetouan")
                 st.markdown("*Home Institution*")
-            st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
+            st.markdown('<div style="margin-bottom: 1rem;"></div>', unsafe_allow_html=True)
         
         st.markdown("---")  # Divider
-        st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
+        st.markdown('<div style="margin-bottom: 1rem;"></div>', unsafe_allow_html=True)
         
         # Second institution with logo
         with st.container():
@@ -466,7 +466,7 @@ def about_page():
                 st.markdown("Center for Teaching and Learning")
                 st.markdown("Ifrane")
                 st.markdown("*Internship Host Institution*")
-            st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
+            st.markdown('<div style="margin-bottom: 1rem;"></div>', unsafe_allow_html=True)
 
 # --- Load the Model ---
 try:
