@@ -610,30 +610,8 @@ def individual_analysis():
 
             st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
             st.markdown(f"""
-            <style>
-                .risk-badge {{
-                    padding: 0.5rem 1rem;
-                    border-radius: 5px;
-                    font-weight: bold;
-                    color: white;
-                    display: inline-block;
-                    margin-top: 0.5rem;
-                }}
-                .at-risk {{
-                    background-color: #ff6b6b; /* Red */
-                }}
-                .not-risk {{
-                    background-color: #51cf66; /* Green */
-                }}
-                .metric-card {{
-                    margin: 20px 0;
-                    padding: 20px;
-                    border-radius: 10px;
-                    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-                }}
-            </style>
             <div style="margin: 20px 0; padding: 20px; border-radius: 10px;
-                         background: #e6f0fa; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        background: #e6f0fa; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                 <h3>Prediction Result</h3>
                 <div class="risk-badge {prediction['risk_status'].lower().replace(' ', '-')}">
                     {prediction['risk_status']}
