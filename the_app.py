@@ -685,8 +685,7 @@ def batch_analysis():
             On this page, instructors can upload a CSV file containing data for multiple students to perform batch predictions. The CSV must include a 'Student_id' column and all required features (e.g., Average_assignment_score, Num_of_missing_assingnment, Total_LMS_Activity, rate_Of_Globale_Attandence, and others). The system will predict the risk status for each student and display the results in two groups: At-Risk and Not At-Risk, along with visualizations of risk distribution and feature importance.
         </p>
     </div>
-    """, unsafe_allow_html=True)
-    st.write("Debug: Attempting to load example CSV file")    
+    """, unsafe_allow_html=True)   
     # Download example CSV file
     try:
         with open('example_student_data.csv', 'rb') as f:
