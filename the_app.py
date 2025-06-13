@@ -686,6 +686,7 @@ def batch_analysis():
         </p>
     </div>
     """, unsafe_allow_html=True)
+    st.write("Debug: Attempting to load example CSV file")    
     # Download example CSV file
     try:
         with open('example_student_data.csv', 'rb') as f:
