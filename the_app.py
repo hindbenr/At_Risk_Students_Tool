@@ -682,7 +682,7 @@ def batch_analysis():
     </div>
     <div class="metric-card">
         <p style="font-family: 'Montserrat', sans-serif; font-size: 1.1rem; color: #333;">
-            On this page, instructors can upload a CSV file containing data for multiple students to perform batch predictions. The CSV must include a 'Student_id' column and all required features (e.g., Average_assignment_score, Num_of_missing_assingnment, Total_LMS_Activity, rate_Of_Globale_Attandence, and others). The system will predict the risk status for each student and display the results in two groups: At-Risk and Not At-Risk, along with visualizations of risk distribution and feature importance.
+            The Batch Prediction section enables instructors to evaluate multiple students' academic risk simultaneously. To perform batch predictions, download the example CSV file below to review the required format, then upload a CSV file containing student data, including all necessary features. The system will predict each student's risk status, categorize them as At-Risk or Not At-Risk, and provide visualizations of risk distribution and feature importance.
         </p>
     </div>
     """, unsafe_allow_html=True)   
