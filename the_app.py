@@ -387,7 +387,7 @@ def about_page():
             col_img, col_text = st.columns([1, 2])
             with col_img:
                 try:
-                    st.image(image_files["hinda"], width=80)
+                    st.image(image_files["hinda"], width=100)
 
                 except FileNotFoundError:
                     st.error(f"Failed to load hinda.jpg")
@@ -403,7 +403,7 @@ def about_page():
             col_img, col_text = st.columns([1, 2])
             with col_img:
                 try:
-                    st.image(image_files["souhaib"], width=80)
+                    st.image(image_files["souhaib"], width=100)
                 except FileNotFoundError:
                     st.error(f"Failed to load souhaib.jpg")
             with col_text:
@@ -418,7 +418,7 @@ def about_page():
             col_img, col_text = st.columns([1, 2])
             with col_img:
                 try:
-                    st.image(image_files["tarik"], width=80)
+                    st.image(image_files["tarik"], width=100)
                 except FileNotFoundError:
                     st.error(f"Failed to load tarik.jpg")
             with col_text:
@@ -440,7 +440,7 @@ def about_page():
             col_logo, col_info = st.columns([1, 2])
             with col_logo:
                 try:
-                    st.image(image_files["ens"], width=80)
+                    st.image(image_files["ens"], width=100)
                 except FileNotFoundError:
                     st.error(f"Failed to load ens.jpg")
             with col_info:
@@ -458,7 +458,7 @@ def about_page():
             col_logo, col_info = st.columns([1, 2])
             with col_logo:
                 try:
-                    st.image(image_files["aui"], width=80)
+                    st.image(image_files["aui"], width=100)
                 except FileNotFoundError:
                     st.error(f"Failed to load aui.jpg")
             with col_info:
