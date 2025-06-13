@@ -686,6 +686,20 @@ def batch_analysis():
         </p>
     </div>
     """, unsafe_allow_html=True)
+    # Download example CSV file
+    try:
+        with open('example_student_data.csv', 'rb') as f:
+            csv_data = f.read()
+        st.download_button(
+            label="Download Example CSV File",
+            data=csv_data,
+            file_name="example_student_data.csv",
+            mime="text/csv",
+            key="download_example_csv"
+        )
+    except FileNotFoundError:
+        st.error("Example file 'example_student_data.csv' not found. Please ensure the file is in the app's directory.")
+    
     st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
     
     uploaded_file = st.file_uploader("Import Student Data (.csv file)", type="csv")
