@@ -289,7 +289,7 @@ def about_page():
     """, unsafe_allow_html=True)
 
     # Big Project Title
-    st.markdown('<div class="project-title">At-Risk Student Prediction System</div>', unsafe_allow_html=True)
+    st.markdown('<div class="project-title">At-Risk Student Prediction Tool </div>', unsafe_allow_html=True)
     st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
 
     # Page Title
