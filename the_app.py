@@ -613,7 +613,8 @@ def individual_analysis():
             <div style="margin: 20px 0; padding: 20px; border-radius: 10px;
                         background: #e6f0fa; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                 <h3>Prediction Result</h3>
-                <div class="risk-badge {prediction['risk_status'].lower().replace(' ', '-')}">
+                <div class="risk-badge {prediction['risk_status'].lower().replace(' ', '-')}"
+                    style="background-color: {('#ff6b6b' if prediction['risk_status'] == 'At-Risk' else '#51cf66')}; color: white; padding: 8px 15px; border-radius: 20px;">
                     {prediction['risk_status']}
                 </div>
                 <p>Risk Score: {prediction['risk_score']:.2f}%</p>
@@ -645,14 +646,11 @@ def individual_analysis():
             st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
 
             st.markdown(f"""
-            <div style="margin: 20px 0; padding: 20px; border-radius: 10px;
-                        background: #e6f0fa; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                <h3>Prediction Result</h3>
-                <div class="risk-badge {prediction['risk_status'].lower().replace(' ', '-')}"
-                    style="background-color: {('#ff6b6b' if prediction['risk_status'] == 'At-Risk' else '#51cf66')}; color: white; padding: 8px 15px; border-radius: 20px;">
-                    {prediction['risk_status']}
-                </div>
-                <p>Risk Score: {prediction['risk_score']:.2f}%</p>
+            <div class="metric-card">
+                <h3>Analysis</h3>
+                <p>Based on the provided data, the model predicts this student is <strong>{prediction['risk_status']}</strong>
+                with a risk score of <strong>{prediction['risk_score']:.2f}%</strong>
+                due to {f"a lower average score ({avg_score}%) and a higher number of missing assignments ({missing_assignments})" if prediction['risk_status'] == 'At-Risk' else "relatively consistent performance across the monitored metrics"}.</p>
             </div>
             """, unsafe_allow_html=True)
 
