@@ -570,7 +570,7 @@ def individual_analysis():
     <div style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 2.5rem; color: #1e3a8a; margin-bottom: 1.5rem;">
     Individual Student Analysis
     </div>
-    <div class="metric-card">
+    <div class="metric-card" style= "background-color: #e6f0fa;">
         <p style="font-family: 'Montserrat', sans-serif; font-size: 1.1rem; color: #333;">
             The Individual Analysis section enables instructors to evaluate a single student's academic risk. Enter the student's data, including Student_id, average assignment score, number of missing assignments, total LMS activity (in hours), attendance percentage, using the provided form. The system will predict the student's risk status, categorize them as At-Risk or Not At-Risk, and display a risk score with visualizations of performance metrics.
         </p>
@@ -646,7 +646,7 @@ def individual_analysis():
             st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
 
             st.markdown(f"""
-            <div class="metric-card">
+            <div class="metric-card" style= "background-color: #e6f0fa;">
                 <h3>Analysis</h3>
                 <p>Based on the provided data, the model predicts this student is <strong>{prediction['risk_status']}</strong>
                 with a risk score of <strong>{prediction['risk_score']:.2f}%</strong>
@@ -659,7 +659,7 @@ def batch_analysis():
     <div style="font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 2.5rem; color: #1e3a8a; margin-bottom: 1.5rem;">
     Batch Student Analysis
     </div>
-    <div class="metric-card">
+    <div class="metric-card" style= "background-color: #e6f0fa;">
         <p style="font-family: 'Montserrat', sans-serif; font-size: 1.1rem; color: #333;">
             The Batch Prediction section enables instructors to evaluate multiple students' academic risk simultaneously. To perform batch predictions, download the example CSV file below to review the required format, then upload a CSV file containing student data, including all necessary features. The system will predict each student's risk status, categorize them as At-Risk or Not At-Risk, and provide visualizations of risk distribution and feature importance.
         </p>
