@@ -424,7 +424,7 @@ def about_page():
             with col_text:
                 st.markdown("**Tarik Touis Ghmari**")  
                 st.markdown("Co-Supervisor")  
-                st.markdown("Data Analytics at Babel")  
+                st.markdown("Data Analytics / Data Engineer")  
                 st.markdown("touistarik@gmail.com")
             st.markdown('<div style="margin-bottom: 1rem;"></div>', unsafe_allow_html=True)
     
