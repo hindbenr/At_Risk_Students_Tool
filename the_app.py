@@ -582,77 +582,81 @@ def individual_analysis():
         col1, col2 = st.columns(2)
 
         with col1:
-            student_id = st.text_input("Student ID", placeholder="Enter Student ID")
-            avg_score = st.slider("Average Assignment Score", 0, 100, 70,
+            student_id = st.text_input("Student ID *", placeholder="Enter Student ID", key="student_id")
+            avg_score = st.slider("Average Assignment Score *", 0, 100, 70,
                                     help="The student's average score across all assignments")
-            missing_assignments = st.slider("Number of Missing Assignments", 0, 10, 2,
+            missing_assignments = st.slider("Number of Missing Assignments *", 0, 10, 2,
                                             help="Count of assignments not submitted")
 
         with col2:
-            lms_activity = st.slider("Total LMS Activity (hours)", 0, 100, 30,
+            lms_activity = st.slider("Total LMS Activity (hours) *", 0, 100, 30,
                                         help="Total time spent on Learning Management System")
-            attendance = st.slider("Total Attendance (%)", 0, 100, 80,
+            attendance = st.slider("Total Attendance (%) *", 0, 100, 80,
                                     help="Percentage of classes attended")
 
         submitted = st.form_submit_button("Predict Risk")
 
-    if submitted:
-        student_data = {
-            'avg_score': avg_score,
-            'missing_assignments': missing_assignments,
-            'lms_activity': lms_activity,
-            'attendance': attendance
-        }
+        # Validation to ensure all fields are filled
+        if submitted:
+            if not student_id or not avg_score or not missing_assignments or not lms_activity or not attendance:
+                st.error("All fields marked with * are mandatory. Please fill in all required fields.")
+            else:
+                student_data = {
+                    'avg_score': avg_score,
+                    'missing_assignments': missing_assignments,
+                    'lms_activity': lms_activity,
+                    'attendance': attendance
+                }
 
-        with st.spinner("Analyzing student data..."):
-            prediction = predict_risk(student_data)
-            time.sleep(1)  # Simulate processing
+                with st.spinner("Analyzing student data..."):
+                    prediction = predict_risk(student_data)
+                    time.sleep(1)  # Simulate processing
 
-            st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
-            st.markdown(f"""
-            <div style="margin: 20px 0; padding: 20px; border-radius: 10px;
-                        background: #e6f0fa; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                <h3>Prediction Result</h3>
-                <div class="risk-badge {prediction['risk_status'].lower().replace(' ', '-')}"
-                    style="background-color: {('#ff6b6b' if prediction['risk_status'] == 'At-Risk' else '#51cf66')}; color: white; padding: 8px 15px; border-radius: 20px;">
-                    {prediction['risk_status']}
-                </div>
-                <p>Risk Score: {prediction['risk_score']:.2f}%</p>
-            </div>
-            """, unsafe_allow_html=True)
+                    st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
+                    st.markdown(f"""
+                    <div style="margin: 20px 0; padding: 20px; border-radius: 10px;
+                                background: #e6f0fa; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        <h3>Prediction Result</h3>
+                        <div class="risk-badge {prediction['risk_status'].lower().replace(' ', '-')}"
+                            style="background-color: {('#ff6b6b' if prediction['risk_status'] == 'At-Risk' else '#51cf66')}; color: white; padding: 8px 15px; border-radius: 20px;">
+                            {prediction['risk_status']}
+                        </div>
+                        <p>Risk Score: {prediction['risk_score']:.2f}%</p>
+                    </div>
+                    """, unsafe_allow_html=True)
 
-            st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
+                    st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
 
-            # Performance Overview Chart
-            fig1 = px.bar(
-                x=["Avg Score", "Missing Assignments", "LMS Activity", "Attendance"],
-                y=[avg_score, missing_assignments, lms_activity, attendance],
-                title="Performance Overview"
-            )
-            st.plotly_chart(fig1, use_container_width=True)
+                    # Performance Overview Chart
+                    fig1 = px.bar(
+                        x=["Avg Score", "Missing Assignments", "LMS Activity", "Attendance"],
+                        y=[avg_score, missing_assignments, lms_activity, attendance],
+                        title="Performance Overview"
+                    )
+                    st.plotly_chart(fig1, use_container_width=True)
 
-            st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
+                    st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
 
-            # Engagement Level Chart
-            total_assignments = 10
-            completed_assignments = total_assignments - missing_assignments
-            fig2 = px.pie(
-                names=["Completed Assignments", "Missing Assignments"],
-                values=[completed_assignments, missing_assignments],
-                title="Assignment Completion"
-            )
-            st.plotly_chart(fig2, use_container_width=True)
+                    # Engagement Level Chart
+                    total_assignments = 10
+                    completed_assignments = total_assignments - missing_assignments
+                    fig2 = px.pie(
+                        names=["Completed Assignments", "Missing Assignments"],
+                        values=[completed_assignments, missing_assignments],
+                        title="Assignment Completion"
+                    )
+                    st.plotly_chart(fig2, use_container_width=True)
 
-            st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
+                    st.markdown('<div style="margin-bottom: 2rem;"></div>', unsafe_allow_html=True)
 
-            st.markdown(f"""
-            <div class="metric-card" style= "background-color: #e6f0fa;">
-                <h3>Analysis</h3>
-                <p>Based on the provided data, the model predicts this student is <strong>{prediction['risk_status']}</strong>
-                with a risk score of <strong>{prediction['risk_score']:.2f}%</strong>
-                due to {f"a lower average score ({avg_score}%) and a higher number of missing assignments ({missing_assignments})" if prediction['risk_status'] == 'At-Risk' else "relatively consistent performance across the monitored metrics"}.</p>
-            </div>
-            """, unsafe_allow_html=True)
+                    st.markdown(f"""
+                    <div class="metric-card" style= "background-color: #e6f0fa;">
+                        <h3>Analysis</h3>
+                        <p>Based on the provided data, the model predicts this student is <strong>{prediction['risk_status']}</strong>
+                        with a risk score of <strong>{prediction['risk_score']:.2f}%</strong>
+                        due to {f"a lower average score ({avg_score}%) and a higher number of missing assignments ({missing_assignments})" if prediction['risk_status'] == 'At-Risk' else "relatively consistent performance across the monitored metrics"}.</p>
+                    </div>
+                    """, unsafe_allow_html=True)
 
 def batch_analysis():
     st.markdown("""
