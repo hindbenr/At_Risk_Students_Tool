@@ -321,7 +321,7 @@ def about_page():
         st.markdown("""
             <div class="metric-circle">
                 <div class="metric-label">Accuracy</div>
-                <div class="metric-value">89%</div>
+                <div class="metric-value">95%</div>
             </div>
         """, unsafe_allow_html=True)
 
@@ -329,7 +329,7 @@ def about_page():
         st.markdown("""
             <div class="metric-circle">
                 <div class="metric-label">Precision</div>
-                <div class="metric-value">85%</div>
+                <div class="metric-value">94%</div>
             </div>
         """, unsafe_allow_html=True)
 
@@ -337,7 +337,7 @@ def about_page():
         st.markdown("""
             <div class="metric-circle">
                 <div class="metric-label">Recall</div>
-                <div class="metric-value">82%</div>
+                <div class="metric-value">92%</div>
             </div>
         """, unsafe_allow_html=True)
 
@@ -345,7 +345,7 @@ def about_page():
         st.markdown("""
             <div class="metric-circle">
                 <div class="metric-label">F1-Score</div>
-                <div class="metric-value">83%</div>
+                <div class="metric-value">93%</div>
             </div>
         """, unsafe_allow_html=True)
 
